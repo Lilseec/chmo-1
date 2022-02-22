@@ -1,5 +1,7 @@
 const spawn = require("child_process").spawn;
 const fs = require('fs')
+var fetch = require('node-fetch');
+var cron = require('node-cron');
 // const Iconv = require('iconv').Iconv;
 
 const { Telegraf } = require('telegraf')
@@ -23,11 +25,24 @@ bot.on('text', async (ctx) => {
     }
     
     console.log(translated)
-    ctx.replyWithMarkdown(translated + '\n' + '\n' +'[Наш Канал](https://t.me/maguraNWS)', { disable_web_page_preview: true })
-    ctx.telegram.sendMessage('@aiusdhfiuashfa', translated + '\n' + '\n' +'[Наш Канал](https://t.me/maguraNWS)', { disable_web_page_preview: true, parse_mode: 'Markdown' })
+    ctx.replyWithMarkdown(translated + '\n' + '\n' +'[Наш Канал](https://t.me/maguraINF)', { disable_web_page_preview: true })
+    ctx.telegram.sendMessage('@aiusdhfiuashfa', translated + '\n' + '\n' +'[Наш Канал](https://t.me/maguraINF)', { disable_web_page_preview: true, parse_mode: 'Markdown' })
 
     
 })
+
+async function currency() {
+    let usd = await fetch('https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json&valcode=USD').then(res => res.json()).then(data => data[0].rate)
+    let eur = await fetch('https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json&valcode=EUR').then(res => res.json()).then(data => data[0].rate)
+    let rub = await fetch('https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json&valcode=RUB').then(res => res.json()).then(data => data[0].rate)
+    let message = `💰Курс валют на сьогодні: \nUSD - ${usd} \nEUR - ${eur} \nRUB - ${rub}`
+    bot.telegram.sendMessage('@maguraINF', message)
+}
+
+
+cron.schedule('00 08 * * *', () => {
+    currency()
+  });
 
 
 function translate(textToTranslate) {
