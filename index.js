@@ -8,7 +8,7 @@ const { Telegraf } = require('telegraf')
 const extra = require('telegraf/extra')
 const markup = extra.markdown()
 
-const bot = new Telegraf('')
+const bot = new Telegraf(process.env.BOT)
 bot.start((ctx) => ctx.reply('Ну вводите, вводите'))
 bot.help((ctx) => ctx.reply('Слава белым'))
 bot.on('text', async (ctx) => {
